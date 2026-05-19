@@ -8,3 +8,4 @@ shap
 matplotlib
 joblib
 gdown
+imbalanced-learn
