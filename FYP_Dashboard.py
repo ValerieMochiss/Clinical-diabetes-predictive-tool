@@ -1,8 +1,9 @@
 # =========================================================================
-# 🛠️ CRITICAL COMPATIBILITY PATCH FOR SCIPY / SKLEARN VERSION MISMATCHES
+# 🛠️ UNSTOPPABLE COMPATIBILITY PATCH FOR SCIPY / SKLEARN VERSION MISMATCHES
 # =========================================================================
 import sklearn.utils.validation
 import sklearn.ensemble
+import inspect
 
 # 1. Patch missing _is_pandas_df for SHAP Analysis
 def _is_pandas_df(X):
@@ -10,11 +11,14 @@ def _is_pandas_df(X):
     return isinstance(X, pd.DataFrame)
 sklearn.utils.validation._is_pandas_df = _is_pandas_df
 
-# 2. Patch AdaBoostClassifier to silently drop the deprecated 'algorithm' argument
+# 2. Force AdaBoostClassifier to automatically drop ANY invalid structural arguments
 orig_adaboost_init = sklearn.ensemble.AdaBoostClassifier.__init__
 def patched_adaboost_init(self, *args, **kwargs):
-    kwargs.pop('algorithm', None)  # Strips out 'algorithm' if present, preventing the crash!
-    orig_adaboost_init(self, *args, **kwargs)
+    # This automatically looks at what arguments the new scikit-learn accepts,
+    # and throws away anything else (like 'algorithm') that came from your old .pkl file!
+    valid_params = inspect.signature(orig_adaboost_init).parameters
+    filtered_kwargs = {k: v for k, v in kwargs.items() if k in valid_params}
+    orig_adaboost_init(self, *args, **file_id if 'args' in valid_params else args, **filtered_kwargs)
 sklearn.ensemble.AdaBoostClassifier.__init__ = patched_adaboost_init
 # =========================================================================
 
@@ -28,6 +32,7 @@ import shap
 import matplotlib.pyplot as plt 
 import os
 import gdown
+import sklearn
 
 # Force matplotlib to use a dark theme so text is visible!
 plt.style.use('dark_background')
