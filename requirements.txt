@@ -1,0 +1,12 @@
+streamlit
+scikit-learn
+pandas
+numpy
+xgboost
+plotly
+shap
+matplotlib
+joblib
+gdown
+imbalanced-learn
+bcrypt
