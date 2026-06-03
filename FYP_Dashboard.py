@@ -1,9 +1,22 @@
-# FIX FOR SCIPY / SKLEARN VERSION MISMATCH
+# =========================================================================
+# 🛠️ CRITICAL COMPATIBILITY PATCH FOR SCIPY / SKLEARN VERSION MISMATCHES
+# =========================================================================
 import sklearn.utils.validation
+import sklearn.ensemble
+
+# 1. Patch missing _is_pandas_df for SHAP Analysis
 def _is_pandas_df(X):
     import pandas as pd
     return isinstance(X, pd.DataFrame)
 sklearn.utils.validation._is_pandas_df = _is_pandas_df
+
+# 2. Patch AdaBoostClassifier to silently drop the deprecated 'algorithm' argument
+orig_adaboost_init = sklearn.ensemble.AdaBoostClassifier.__init__
+def patched_adaboost_init(self, *args, **kwargs):
+    kwargs.pop('algorithm', None)  # Strips out 'algorithm' if present, preventing the crash!
+    orig_adaboost_init(self, *args, **kwargs)
+sklearn.ensemble.AdaBoostClassifier.__init__ = patched_adaboost_init
+# =========================================================================
 
 import streamlit as st
 import pandas as pd
