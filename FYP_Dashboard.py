@@ -8,6 +8,7 @@ import shap
 import matplotlib.pyplot as plt 
 import os
 import gdown
+import sklearn
 
 # Force matplotlib to use a dark theme so text is visible!
 plt.style.use('dark_background')
