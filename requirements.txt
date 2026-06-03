@@ -1,12 +1,10 @@
 streamlit
-scikit-learn
 pandas
 numpy
-xgboost
+joblib
 plotly
 shap
 matplotlib
-joblib
 gdown
-imbalanced-learn
-bcrypt
+scikit-learn==1.3.2  # <-- Match your local version exactly!
+xgboost==2.0.3       # <-- Match your local version exactly!
