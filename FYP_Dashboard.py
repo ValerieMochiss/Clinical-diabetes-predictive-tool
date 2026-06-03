@@ -1,3 +1,10 @@
+# FIX FOR SCIPY / SKLEARN VERSION MISMATCH
+import sklearn.utils.validation
+def _is_pandas_df(X):
+    import pandas as pd
+    return isinstance(X, pd.DataFrame)
+sklearn.utils.validation._is_pandas_df = _is_pandas_df
+
 import streamlit as st
 import pandas as pd
 import numpy as np
