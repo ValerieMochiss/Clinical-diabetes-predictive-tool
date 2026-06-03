@@ -14,11 +14,9 @@ sklearn.utils.validation._is_pandas_df = _is_pandas_df
 # 2. Force AdaBoostClassifier to automatically drop ANY invalid structural arguments
 orig_adaboost_init = sklearn.ensemble.AdaBoostClassifier.__init__
 def patched_adaboost_init(self, *args, **kwargs):
-    # This automatically looks at what arguments the new scikit-learn accepts,
-    # and throws away anything else (like 'algorithm') that came from your old .pkl file!
     valid_params = inspect.signature(orig_adaboost_init).parameters
     filtered_kwargs = {k: v for k, v in kwargs.items() if k in valid_params}
-    orig_adaboost_init(self, *args, **file_id if 'args' in valid_params else args, **filtered_kwargs)
+    orig_adaboost_init(self, *args, **filtered_kwargs)
 sklearn.ensemble.AdaBoostClassifier.__init__ = patched_adaboost_init
 # =========================================================================
 
